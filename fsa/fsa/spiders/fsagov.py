@@ -13,6 +13,8 @@ class FsagovSpider(scrapy.Spider):
     name = 'fsagov'
     allowed_domains = ['pub.fsa.gov.ru']
     detail_url = "https://pub.fsa.gov.ru/api/v1/ral/common/companies/{id}"
+    TOKEN = 'Bearer eyJhbGciOiJIUzUxMiJ9.eyJpc3MiOiJiNGQ0ZGRjZS1hNDNiLTQ0YmYtOGJiMC03N2YyZjc5MzY3ZDciLCJzdWIiOiJhbm9ueW1vdXMiLCJleHAiOjE2MDE0OTc1NzF9.eyuBH2gKnGWyi8TZKE6Qf3nvIRfMX87oPIkV2jQ7MXrj1xnl_8OjPGrBKJOZyZepeuN8T4o7Vsb1dP16MkU_mQ'
+    COOKIE = 'JSESSIONID=node0apfakt8dxjgv70go5yvbx2d952615.node0'
 
     FIELDS = (
         'id',
@@ -23,19 +25,14 @@ class FsagovSpider(scrapy.Spider):
         'nameType',
         'fullName',
         'address',
-        # НЧЕР
         'nameTypeActivity',
         'oaDescription'
     )
 
-    DETAIL_FIELDS = (
-
-    )
-
     headers = {
         'Content-Type': 'application/json',
-        'Authorization': 'Bearer eyJhbGciOiJIUzUxMiJ9.eyJpc3MiOiIwOWY0Y2E0ZC0zNjFjLTRiZTUtOTgxMS1jYzU4Yzk5YTc1NzYiLCJzdWIiOiJhbm9ueW1vdXMiLCJleHAiOjE2MDEzODA3OTl9.CN962eiNK3GyYV6MmPSKNLS_5ZjYCheLFxz1CGfMJs6S61MkMDjXbg-mmCtaq5pDC6WaMDK8z0wG3OXuWmj1XQ',
-        'Cookie': 'JSESSIONID=node01b89b3pga2h0y1krxg0f5mth3o33672.node0'
+        'Authorization': TOKEN,
+        'Cookie': COOKIE
     }
 
     def start_requests(self):
@@ -45,6 +42,9 @@ class FsagovSpider(scrapy.Spider):
 
         payload = {
             "columns": [
+                {"name": "nameType",
+                 "search": "ИЛ",
+                 "type": 0},
                 {"name": "oaDescription",
                  "search": "лифт",
                  "type": 0
@@ -60,13 +60,16 @@ class FsagovSpider(scrapy.Spider):
                                     data=json.dumps(payload),
                                     verify=False
                                     )
-        r_json = json.loads(response.text.encode('utf8'))
+        r_json = json.loads(response.text)
         total = r_json['total']
         total_pages = ceil(total / limit)
 
         for page in range(0, total_pages):
             new_payload = {
                 "columns": [
+                    {"name": "nameType",
+                     "search": "ИЛ",
+                     "type": 0},
                     {"name": "oaDescription",
                      "search": "лифт",
                      "type": 0
@@ -93,8 +96,8 @@ class FsagovSpider(scrapy.Spider):
 
             headers = {
                 'Content-Type': 'application/json',
-                'Authorization': 'Bearer eyJhbGciOiJIUzUxMiJ9.eyJpc3MiOiIwOWY0Y2E0ZC0zNjFjLTRiZTUtOTgxMS1jYzU4Yzk5YTc1NzYiLCJzdWIiOiJhbm9ueW1vdXMiLCJleHAiOjE2MDEzODA3OTl9.CN962eiNK3GyYV6MmPSKNLS_5ZjYCheLFxz1CGfMJs6S61MkMDjXbg-mmCtaq5pDC6WaMDK8z0wG3OXuWmj1XQ',
-                'Cookie': 'JSESSIONID=node01b89b3pga2h0y1krxg0f5mth3o33672.node0',
+                'Authorization': self.TOKEN,
+                'Cookie': self.COOKIE,
                 'Referer': f'https://pub.fsa.gov.ru/ral/view/{item["id"]}/state-services'
             }
 
@@ -141,10 +144,4 @@ class FsagovSpider(scrapy.Spider):
                 print('Not full GU in JSON')
             finally:
                 item['extend'] = arr
-
-        # gu_one.update(decisionNumber)
-        # gu_two =
-        # gu_three =
-        # item['gu_three'] = gu_three
-        # print(item)
         yield item
