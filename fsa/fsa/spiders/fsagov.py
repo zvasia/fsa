@@ -13,8 +13,8 @@ class FsagovSpider(scrapy.Spider):
     name = 'fsagov'
     allowed_domains = ['pub.fsa.gov.ru']
     detail_url = "https://pub.fsa.gov.ru/api/v1/ral/common/companies/{id}"
-    TOKEN = 'Bearer eyJhbGciOiJIUzUxMiJ9.eyJpc3MiOiJiNGQ0ZGRjZS1hNDNiLTQ0YmYtOGJiMC03N2YyZjc5MzY3ZDciLCJzdWIiOiJhbm9ueW1vdXMiLCJleHAiOjE2MDE0OTc1NzF9.eyuBH2gKnGWyi8TZKE6Qf3nvIRfMX87oPIkV2jQ7MXrj1xnl_8OjPGrBKJOZyZepeuN8T4o7Vsb1dP16MkU_mQ'
-    COOKIE = 'JSESSIONID=node0apfakt8dxjgv70go5yvbx2d952615.node0'
+    TOKEN = 'Bearer xxxxxxx'
+    COOKIE = 'JSESSIONID=xxxxx.node0'
 
     FIELDS = (
         'id',
