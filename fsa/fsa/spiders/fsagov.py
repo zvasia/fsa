@@ -9,11 +9,19 @@ from scrapy import Request
 from fsa.items import FsaItem
 
 
+def get_token():
+    token_payload = {"username": "anonymous", "password": "hrgesf7HDR67Bd"}
+    response = requests.request(url='https://pub.fsa.gov.ru/login', method='POST', data=json.dumps(token_payload),
+                                verify=False)
+    token = response.headers['Authorization']
+    return token
+
+
 class FsagovSpider(scrapy.Spider):
     name = 'fsagov'
     allowed_domains = ['pub.fsa.gov.ru']
     detail_url = "https://pub.fsa.gov.ru/api/v1/ral/common/companies/{id}"
-    TOKEN = 'Bearer xxxxxxx'
+    TOKEN = get_token()
     COOKIE = 'JSESSIONID=xxxxx.node0'
 
     FIELDS = (
