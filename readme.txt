@@ -26,9 +26,6 @@
 # Install requirements
 # pip install -r requirements.txt
 
-
-# Manually update TOKEN and COOKIE
-
 # To run parser enter in console:
 
 # cd fsa
